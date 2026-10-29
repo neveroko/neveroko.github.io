@@ -1,36 +1,79 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Простой HTML Файл</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-        h1 {
-            color: #333;
-        }
-        p {
-            color: #666;
-        }
-        a {
-            color: #0066cc;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body>
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {
+  getAuth,
+  GithubAuthProvider,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged,
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 
-    <h1>Добро пожаловать на мой сайт!</h1>
-    <p>Это простой пример HTML файла. Вы можете изменить его по своему усмотрению.</p>
-    <p>Для получения дополнительной информации, посетите <a href="https://www.example.com" target="_blank">наш сайт</a>.</p>
 
-</body>
-</html>
+const firebaseConfig = {
+  apiKey: "AIzaSyBPFKALg0hmJ93wtVp0mMak98xEE1JPe1w",
+  authDomain: "suomi14-project.firebaseapp.com",
+  projectId: "suomi14-project",
+  appId: "1:879836547524:web:8669d09673a2030481fc91",
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+const provider = new GithubAuthProvider();
+provider.addScope("user:email"); 
+const guestBox = document.getElementById("guest");
+const profileBox = document.getElementById("profile");
+const loginBtn = document.getElementById("login");
+const logoutBtn = document.getElementById("logout");
+const avatarEl = document.getElementById("avatar");
+const nameEl = document.getElementById("name");
+const emailEl = document.getElementById("email");
+const errorEl = document.getElementById("error");
+
+function showError(message) {
+  errorEl.textContent = message;
+  errorEl.hidden = !message;
+}
+
+const ERRORS = {
+  "auth/popup-closed-by-user": "Окно входа было закрыто.",
+  "auth/popup-blocked": "Браузер заблокировал всплывающее окно. Разрешите его для этого сайта.",
+  "auth/cancelled-popup-request": "Вход отменён.",
+  "auth/unauthorized-domain": "Домен не добавлен в Firebase: Authentication → Settings → Authorized domains.",
+  "auth/account-exists-with-different-credential":
+    "Аккаунт с этим email уже зарегистрирован через другой способ входа.",
+  "auth/operation-not-allowed": "Вход через GitHub не включён в Firebase.",
+};
+
+
+loginBtn.addEventListener("click", async () => {
+  showError("");
+  loginBtn.disabled = true;
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const credential = GithubAuthProvider.credentialFromResult(result);
+    const githubToken = credential?.accessToken; // токен для запросов к GitHub API
+    console.log("GitHub token:", githubToken);
+  } catch (error) {
+    console.error(error);
+    showError(ERRORS[error.code] || `Ошибка входа: ${error.code}`);
+  } finally {
+    loginBtn.disabled = false;
+  }
+});
+
+
+logoutBtn.addEventListener("click", () => signOut(auth));
+
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    avatarEl.src = user.photoURL || "";
+    nameEl.textContent = user.displayName || "Без имени";
+    emailEl.textContent = user.email || "Email скрыт";
+    guestBox.hidden = true;
+    profileBox.hidden = false;
+  } else {
+    guestBox.hidden = false;
+    profileBox.hidden = true;
+  }
+});
