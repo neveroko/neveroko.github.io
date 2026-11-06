@@ -1,1 +1,71 @@
-
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Вход · сделано neveroko</title>
+  <style>
+    :root {
+      --bg: #f6f8fa;
+      --card: #ffffff;
+      --text: #1f2328;
+      --muted: #59636e;
+      --border: #d1d9e0;
+      --btn: #1f2328;
+      --btn-text: #ffffff;
+      --error: #cf222e;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0d1117;
+        --card: #151b23;
+        --text: #f0f6fc;
+        --muted: #9198a1;
+        --border: #3d444d;
+        --btn: #f0f6fc;
+        --btn-text: #0d1117;
+        --error: #ff7b72;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+    .card {
+      width: min(380px, 92vw);
+      padding: 32px 28px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      text-align: center;
+    }
+    h1 { margin: 0 0 8px; font-size: 22px; }
+    p { margin: 0 0 20px; color: var(--muted); }
+    button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 12px 16px;
+      font: inherit;
+      font-weight: 600;
+      color: var(--btn-text);
+      background: var(--btn);
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover { opacity: .9; }
+    button:focus-visible { outline: 3px solid #0969da; outline-offset: 2px; }
+    button:disabled { opacity: .5; cursor: wait; }
+    button.google {
+      background: #ffffff;
+      color: #1f2328;
+      border: 1px
